@@ -1,0 +1,49 @@
+PHY-216L-12750 (0012750) Physics II Lab
+Steven R. Watchorn 
+s.watchorn@snhu.edu
+09/04/2019-12/18/2019 Laboratory Wednesday 03:30PM - 06:15PM, Robert Frost Hall, Room 209 
+1.00 
+
+
+PHY-216-03742 (0003742) Physics II
+George R. Ludlow 
+g.ludlow@snhu.edu
+09/04/2019-12/18/2019 Lecture Monday, Wednesday 09:30AM - 10:45AM, Robert Frost Hall, Room 201 
+3.00 
+
+
+CS-312-11895 (0011895) Analysis of Algorithms
+No Information Available 
+
+09/05/2019-12/19/2019 Lecture Monday, Thursday 03:30PM - 04:45PM, Engineering Annex, Room 018 
+3.00 
+
+
+MAT-350-06767 (0006767) Applied Linear Algebra
+William Jamieson 
+w.jamieson@snhu.edu
+09/04/2019-12/20/2019 Lecture Wednesday, Friday 11:00AM - 12:15PM, Robert Frost Hall, Room 204 
+3.00 
+
+
+MAT-235-08743 (0008743) Discrete Mathematics II
+Adam J. Gilbert 
+a.gilbert1@snhu.edu
+09/04/2019-12/20/2019 Lecture Wednesday, Friday 12:30PM - 01:45PM, Robert Frost Hall, Room 202 
+3.00 
+
+
+CS-328-09815 (0009815) Embedded Systems
+Charles N. Stevenson 
+c.stevenson@snhu.edu
+09/05/2019-12/19/2019 Lecture Monday, Thursday 02:00PM - 03:15PM, Engineering Annex, Room 014 
+3.00 
+
+
+CS-303L-07813 (0007813) Jr Software Engineer Lab I
+Michael S. Fox 
+m.fox1@snhu.edu
+09/05/2019-12/19/2019 Laboratory Monday, Thursday 12:30PM - 01:45PM, Engineering Annex, Room 013 
+2.00 
+
+
