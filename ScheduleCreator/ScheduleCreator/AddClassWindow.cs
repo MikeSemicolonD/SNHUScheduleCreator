@@ -12,7 +12,10 @@ namespace ScheduleCreator
 {
     public partial class AddClassWindow : Form
     {
-        private List<string> Errors;
+        private List<string> Errors = new List<string>
+        {
+            "ClassDay","ClassName","ClassLocation","ProfessorFullName", "ProfessorEmail"
+        };
 
         public AddClassWindow()
         {
@@ -32,6 +35,30 @@ namespace ScheduleCreator
         }
 
         /// <summary>
+        /// Keep track of any errors that occur with user input
+        /// </summary>
+        /// <param name="errorOrigin"></param>
+        /// <param name="errorOccured"></param>
+        private void LogPotentialError(string errorOrigin, bool errorOccured)
+        {
+            if(errorOccured)
+            {
+                if (!Errors.Contains(errorOrigin))
+                    Errors.Add(errorOrigin);
+            }
+            else
+            {
+                if (Errors.Contains(errorOrigin))
+                    Errors.Remove(errorOrigin);
+            }
+
+            if (Errors.Count > 0)
+                button2.Enabled = false;
+            else
+                button2.Enabled = true;
+        }
+
+        /// <summary>
         /// Add Class button
         /// </summary>
         /// <param name="sender"></param>
@@ -39,14 +66,28 @@ namespace ScheduleCreator
         private void Button2_Click(object sender, EventArgs e)
         {
             string data = "";
-            //Day (Monday - Friday)
-            //Class Name (Learning Fellow: Intro to Programming)
-            //Time Period (11:00 AM - 1:45 PM)
-            //Location (Robert Frost Hall Room 12)
+
+            //Class Name
+            data += "(Custom) "+textBox1.Text+"\r\n";
+            //Professors name (first last)
+            data += textBox3.Text + "\r\n";
+            //Professors email 
+            data += textBox4.Text + "\r\n";
             //Start/End Date (9/5/2019 - 12/19/2019)
-            //Professor (first last (f.l@snhu.edu))
-            //Credits 3
+            data += dateTimePicker1.Text + '-' + dateTimePicker2.Text  + " Lecture ";
+            //Day (Monday - Friday)
+            data += comboBox1.Text;
+            //Optional 2nd Day
+            data += (comboBox2.SelectedIndex > 0) ? (", " + comboBox2.Text + " ") : " ";
+            //Time Period (11:00 AM - 1:45 PM)
+            data += dateTimePicker4.Text + " - " + dateTimePicker3.Text + ", ";
+            //Location (Robert Frost Hall Room 12)
+            data += textBox2.Text + "\r\n";
+            //Credits
+            data += textBox5.Text + "\r\n\r\n\r\n";
+
             MainWindow.instance.AddCustomClass(data);
+
             Close();
         }
 
@@ -67,7 +108,16 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void TextBox3_TextChanged(object sender, EventArgs e)
         {
-            //Label8
+            if(textBox3.Text.Length == 0)
+            {
+                LogPotentialError("ProfessorFullName", true);
+                label8.ForeColor = Color.Red;
+            }
+            else
+            {
+                label8.ForeColor = Color.Black;
+                LogPotentialError("ProfessorFullName", false);
+            }
         }
 
         /// <summary>
@@ -77,7 +127,16 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void TextBox4_TextChanged(object sender, EventArgs e)
         {
-            //Label9
+            if (textBox4.Text.Length == 0)
+            {
+                LogPotentialError("ProfessorEmail", true);
+                label9.ForeColor = Color.Red;
+            }
+            else
+            {
+                label9.ForeColor = Color.Black;
+                LogPotentialError("ProfessorEmail", false);
+            }
         }
 
         /// <summary>
@@ -87,7 +146,16 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void TextBox5_TextChanged(object sender, EventArgs e)
         {
-            //Label10
+            if (textBox5.Text.Length == 0 || !System.Text.RegularExpressions.Regex.IsMatch(textBox5.Text, "[^0-9]"))
+            {
+                LogPotentialError("ClassCredits", true);
+                label10.ForeColor = Color.Red;
+            }
+            else
+            {
+                label10.ForeColor = Color.Black;
+                LogPotentialError("ClassCredits", false);
+            }
         }
 
         /// <summary>
@@ -97,7 +165,19 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void TextBox2_TextChanged(object sender, EventArgs e)
         {
-            //Label4
+            //ONE COMMA ALLOWED!
+            int numOfCommas = (textBox2.Text.Length - textBox2.Text.Replace(",", "").Length);
+
+            if (textBox2.Text.Length == 0 || numOfCommas > 1)
+            {
+                LogPotentialError("ClassLocation", true);
+                label4.ForeColor = Color.Red;
+            }
+            else
+            {
+                label4.ForeColor = Color.Black;
+                LogPotentialError("ClassLocation", false);
+            }
         }
 
         /// <summary>
@@ -107,7 +187,16 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void TextBox1_TextChanged(object sender, EventArgs e)
         {
-            //Label2
+            if (textBox1.Text.Length == 0)
+            {
+                LogPotentialError("ClassName", true);
+                label2.ForeColor = Color.Red;
+            }
+            else
+            {
+                label2.ForeColor = Color.Black;
+                LogPotentialError("ClassName", false);
+            }
         }
 
         /// <summary>
@@ -117,7 +206,16 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void ComboBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //Label1
+            if (comboBox1.SelectedIndex < 0)
+            {
+                LogPotentialError("ClassDay", true);
+                label1.ForeColor = Color.Red;
+            }
+            else
+            {
+                label1.ForeColor = Color.Black;
+                LogPotentialError("ClassDay", false);
+            }
         }
 
         /// <summary>
@@ -127,8 +225,19 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void DateTimePicker1_ValueChanged(object sender, EventArgs e)
         {
-            //Label6 and 7
             //Start date must be less than end date
+            if (dateTimePicker1.Value >= dateTimePicker2.Value)
+            {
+                LogPotentialError("ClassTime", true);
+                label6.ForeColor = Color.Red;
+                label7.ForeColor = Color.Red;
+            }
+            else
+            {
+                label6.ForeColor = Color.Black;
+                label7.ForeColor = Color.Black;
+                LogPotentialError("ClassTime", false);
+            }
         }
 
         /// <summary>
@@ -138,7 +247,19 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void DateTimePicker2_ValueChanged(object sender, EventArgs e)
         {
-            //Label6 and 7
+            //Start date must be less than end date
+            if (dateTimePicker1.Value >= dateTimePicker2.Value)
+            {
+                LogPotentialError("ClassTime", true);
+                label6.ForeColor = Color.Red;
+                label7.ForeColor = Color.Red;
+            }
+            else
+            {
+                label6.ForeColor = Color.Black;
+                label7.ForeColor = Color.Black;
+                LogPotentialError("ClassTime", false);
+            }
         }
 
         /// <summary>
@@ -148,8 +269,19 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void DateTimePicker3_ValueChanged(object sender, EventArgs e)
         {
-            //Label3 and 5
             //Start time must be less than end time
+            if (dateTimePicker4.Value >= dateTimePicker3.Value)
+            {
+                LogPotentialError("ClassDate", true);
+                label3.ForeColor = Color.Red;
+                label5.ForeColor = Color.Red;
+            }
+            else
+            {
+                label3.ForeColor = Color.Black;
+                label5.ForeColor = Color.Black;
+                LogPotentialError("ClassDate", false);
+            }
         }
 
         /// <summary>
@@ -159,7 +291,19 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void DateTimePicker4_ValueChanged(object sender, EventArgs e)
         {
-            //Label3 and 5
+            //Start time must be less than end time
+            if (dateTimePicker4.Value >= dateTimePicker3.Value)
+            {
+                LogPotentialError("ClassDate", true);
+                label3.ForeColor = Color.Red;
+                label5.ForeColor = Color.Red;
+            }
+            else
+            {
+                label3.ForeColor = Color.Black;
+                label5.ForeColor = Color.Black;
+                LogPotentialError("ClassDate", false);
+            }
         }
     }
 }
