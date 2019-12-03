@@ -33,3 +33,16 @@ C:\Users\Mike\Documents\Projects\SNHUScheduleCreator\SNHUScheduleCreator\Schedul
 C:\Users\Mike\Documents\Projects\SNHUScheduleCreator\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.csproj.CoreCompileInputs.cache
 C:\Users\Mike\Documents\Projects\SNHUScheduleCreator\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\Schedule Builder.exe
 C:\Users\Mike\Documents\Projects\SNHUScheduleCreator\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\Schedule Builder.pdb
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\bin\Debug\Schedule Builder.exe.config
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\bin\Debug\Schedule Builder.exe
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\bin\Debug\Schedule Builder.pdb
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.csprojAssemblyReference.cache
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.MainWindow.resources
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.mySNHULoginWindow.resources
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.Properties.Resources.resources
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.SettingsWindow.resources
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.TermSelectWindow.resources
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.csproj.GenerateResource.cache
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\ScheduleCreator.csproj.CoreCompileInputs.cache
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\Schedule Builder.exe
+E:\Projects\SNHUScheduleCreator\ScheduleCreator\ScheduleCreator\obj\Debug\Schedule Builder.pdb

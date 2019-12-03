@@ -34,6 +34,8 @@ namespace ScheduleCreator
             StartPosition = FormStartPosition.CenterScreen;
             instance = this;
             InitializeComponent();
+            textBox1.Text = Properties.Settings.Default.Username;
+            textBox2.Text = Properties.Settings.Default.Password;
         }
 
         /// <summary>
@@ -59,6 +61,7 @@ namespace ScheduleCreator
         private void CanNowUseUI(bool status)
         {
             ControlBox = status;
+            checkBox1.Enabled = status;
             button1.Enabled = status;
 
             if(!status)
@@ -176,6 +179,18 @@ namespace ScheduleCreator
         /// <returns></returns>
         private async Task SelectClassTerm()
         {
+            //If we want our credentials to be remembered
+            if (checkBox1.Checked)
+            {
+                Properties.Settings.Default.Username = textBox1.Text;
+                Properties.Settings.Default.Password = textBox2.Text;
+                Properties.Settings.Default.Save();
+            }
+            else
+            {
+                Properties.Settings.Default.Reset();
+            }
+
             //Wait 3 seconds for the My Schedule home page to load
             await Task.Delay(3000);
 
@@ -217,8 +232,8 @@ namespace ScheduleCreator
             //Click Submit Button
             webBrowser1.Document.GetElementById("WASubmit").InvokeMember("click");
 
-            //Wait 1 second to load the schedule
-            await Task.Delay(1000);
+            //Wait 3 seconds to load the schedule
+            await Task.Delay(3000);
 
             await GetClassData();
         }
@@ -245,10 +260,12 @@ namespace ScheduleCreator
                     HtmlElement tableElement = webBrowser1.Document.GetElementById("GROUP_Grp_LIST_VAR6").Children[2].FirstChild.Children[classDataIncrementor];
 
                     //Get the class name, meetingInfo, and credit amount
-                    ClassData newClassData = new ClassData();
-                    newClassData.CourseNameAndTitle = tableElement.Children[1].FirstChild.FirstChild.InnerText;
-                    newClassData.MeetingInformation = tableElement.Children[3].FirstChild.InnerText;
-                    newClassData.Creds = tableElement.Children[4].FirstChild.InnerText;
+                    ClassData newClassData = new ClassData
+                    {
+                        CourseNameAndTitle = tableElement.Children[1].FirstChild.FirstChild.InnerText,
+                        MeetingInformation = tableElement.Children[3].FirstChild.InnerText,
+                        Creds = tableElement.Children[4].FirstChild.InnerText
+                    };
 
                     //Click the class title link to find more information (Opens a tab that's internal)
                     webBrowser1.Document.GetElementById("LIST_VAR6_" + classDataIncrementor).InvokeMember("click");
@@ -262,6 +279,20 @@ namespace ScheduleCreator
 
                     //Modify string to get rid of that extra space on the far right
                     newClassData.ProfEmail = newClassData.ProfEmail.Substring(0, newClassData.ProfEmail.Length - 1);
+
+                    int numOfCommas = (newClassData.MeetingInformation.Length - newClassData.MeetingInformation.Replace(",", "").Length);
+
+                    //If true, then this class is probably on seperate day at a completeley different time
+                    if(numOfCommas > 3)
+                    {
+                        //Make it its own class
+                        ClassData newClassDataClone = new ClassData { CourseNameAndTitle = newClassData.CourseNameAndTitle, Creds = newClassData.Creds, MeetingInformation = newClassData.MeetingInformation, ProfEmail = newClassData.ProfEmail, ProfName = newClassData.ProfName};
+                        newClassDataClone.MeetingInformation = newClassDataClone.MeetingInformation.Substring((newClassDataClone.MeetingInformation.Length / 2) + 1);
+                        ClassDataFound.Add(newClassDataClone);
+
+                        //Get rid of the extra information from the base class
+                        newClassData.MeetingInformation = newClassData.MeetingInformation.Substring(0, (newClassData.MeetingInformation.Length / 2) + 1);
+                    }
 
                     ClassDataFound.Add(newClassData);
 

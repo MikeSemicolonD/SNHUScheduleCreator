@@ -36,13 +36,14 @@ namespace ScheduleCreator
             public bool OutputCreditTotalInExcel;
             public bool SwitchDayAndMonthPositionInExcel;
             public bool LoadTableOnLoad;
+            public bool PerformPageSetupOperations;
             public int SelectedParserTemplate;
         }
 
         /// <summary>
         /// Default Settings
         /// </summary>
-        public readonly Settings Default = new Settings { OutputDataAsRawInExcel = false, OutputCreditTotalInExcel = true, SwitchDayAndMonthPositionInExcel = false, LoadTableOnLoad = true, SelectedParserTemplate = 0 };
+        public readonly Settings Default = new Settings { OutputDataAsRawInExcel = false, OutputCreditTotalInExcel = true, SwitchDayAndMonthPositionInExcel = false, LoadTableOnLoad = true, PerformPageSetupOperations = false, SelectedParserTemplate = 0 };
 
         /// <summary>
         /// /Settings that we'll modify at runtime
@@ -262,9 +263,9 @@ namespace ScheduleCreator
             button3.Enabled = false;
             button4.Visible = false;
             
-            if (Properties.Settings.Default.DefaultDir.Length != 0)
+            if (Properties.Settings.Default.Destination.Length != 0)
             {
-                textBox2.Text = Properties.Settings.Default.DefaultDir;
+                textBox2.Text = Properties.Settings.Default.Destination;
             }
         }
 
@@ -353,6 +354,9 @@ namespace ScheduleCreator
         {
             if (textBox2.Text != "" && textBox2.Text.Length >= 3)
             {
+                Properties.Settings.Default.Destination = textBox2.Text;
+                Properties.Settings.Default.Save();
+
                 button3.Text = "Exporting...";
                 button3.Enabled = false;
 
@@ -594,6 +598,8 @@ namespace ScheduleCreator
 
                         creditSum = 0;
 
+                        List<string> classes = new List<string>();
+
                         while (rightIndex != data.Length)
                         {
                             Entry tableElement = new Entry() { dataStrings = new string[9] };
@@ -621,7 +627,12 @@ namespace ScheduleCreator
                                     tableElement.day2weight = DecodeDayValue(tableElement.dataStrings[5]) + tableElement.timeValue;
                                 }
 
-                                creditSum += Convert.ToInt32(tableElement.dataStrings[8].Substring(0,1));
+                                //Add to credit sum if we haven't included this class already
+                                if (!classes.Contains(tableElement.dataStrings[0]))
+                                {
+                                    creditSum += Convert.ToInt32(tableElement.dataStrings[8].Substring(0, 1));
+                                    classes.Add(tableElement.dataStrings[0]);
+                                }
 
                                 //If this list was originally empty
                                 if (entries.Count == 0)
@@ -873,9 +884,6 @@ namespace ScheduleCreator
         /// <param name="tableData"></param>
         private void GenerateExcelFile(DataTable tableData, bool OutputRaw=false)
         {
-
-            Properties.Settings.Default.DefaultDir = textBox2.Text;
-            Properties.Settings.Default.Save();
 
             Microsoft.Office.Interop.Excel.Application Excel = new Microsoft.Office.Interop.Excel.Application
             {
@@ -1176,6 +1184,17 @@ namespace ScheduleCreator
                         creditCell.Font.Size = 12;
                         creditTotalLabel.Font.Size = 12;
                     }
+
+                    Range TimeRange = excelWorksheet.Columns["C:C"];
+                    Range LocationRange = excelWorksheet.Columns["D:D"];
+                    Range ProfNameRange = excelWorksheet.Columns["F:F"];
+                    Range ClassNameRange = excelWorksheet.Columns["B:B"];
+
+                    //Auto fit the width on these columns
+                    TimeRange.AutoFit();
+                    LocationRange.AutoFit();
+                    ClassNameRange.AutoFit();
+                    ProfNameRange.AutoFit();
                 }
                 else
                 {
@@ -1226,10 +1245,13 @@ namespace ScheduleCreator
                 //Define our path and file name
                 fileNameAndPath = textBox2.Text + '/' + excelWorksheet.Name;
 
-                excelWorksheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
-                excelWorksheet.PageSetup.Zoom = false;
-                excelWorksheet.PageSetup.FitToPagesTall = 1;
-                excelWorksheet.PageSetup.FitToPagesWide = 1;
+                if (RuntimeSettings.PerformPageSetupOperations)
+                {
+                    excelWorksheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
+                    excelWorksheet.PageSetup.Zoom = false;
+                    excelWorksheet.PageSetup.FitToPagesTall = 1;
+                    excelWorksheet.PageSetup.FitToPagesWide = 1;
+                }
 
             }
             catch (ApplicationException ex)
@@ -1272,7 +1294,12 @@ namespace ScheduleCreator
 
                 //Save it and close it
                 excelWorkbook.SaveAs(fileNameAndPath + versionExtension);
-                excelWorkbook.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, fileNameAndPath + versionExtension);
+
+                if (RuntimeSettings.PerformPageSetupOperations)
+                {
+                    excelWorkbook.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, fileNameAndPath + versionExtension);
+                }
+
                 excelWorkbook.Close();
                 Excel.Quit();
 

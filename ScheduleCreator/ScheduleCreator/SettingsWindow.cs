@@ -62,6 +62,7 @@ namespace ScheduleCreator
             checkBox3.Checked = newSettings.SwitchDayAndMonthPositionInExcel;
             checkBox4.Checked = newSettings.LoadTableOnLoad;
             comboBox1.SelectedIndex = newSettings.SelectedParserTemplate;
+            checkBox5.Checked = newSettings.PerformPageSetupOperations;
         }
     }
 }
