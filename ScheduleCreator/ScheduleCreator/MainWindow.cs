@@ -18,6 +18,11 @@ namespace ScheduleCreator
         public static MainWindow instance;
 
         /// <summary>
+        /// Add class window object
+        /// </summary>
+        private AddClassWindow addClassWindow;
+
+        /// <summary>
         /// Settings window object itself
         /// </summary>
         private SettingsWindow settings = null;
@@ -244,6 +249,15 @@ namespace ScheduleCreator
         }
 
         /// <summary>
+        /// Gets called from the settings window when it's closed.
+        /// </summary>
+        public void ClosedAddClassWindowCallback()
+        {
+            addClassWindow = null;
+            button8.Enabled = true;
+        }
+
+        /// <summary>
         /// Applys Default settings
         /// </summary>
         private void LoadSettings()
@@ -306,6 +320,15 @@ namespace ScheduleCreator
                     MessageBox.Show(ex.Message+" : "+ex.StackTrace);
                 }
             }
+        }
+
+        /// <summary>
+        /// Appends custom class to text data and regenerates the data table
+        /// </summary>
+        /// <param name="dataToAppend"></param>
+        public void AddCustomClass(string dataToAppend)
+        {
+            LoadDataIntoTextBox(textBox1.Text+dataToAppend);
         }
 
         /// <summary>
@@ -448,6 +471,21 @@ namespace ScheduleCreator
                 login = new mySNHULoginWindow();
                 login.Show();
                 button7.Enabled = false;
+            }
+        }
+
+        /// <summary>
+        /// Add a custom class button
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button8_Click(object sender, EventArgs e)
+        {
+            if (addClassWindow == null)
+            {
+                addClassWindow = new AddClassWindow();
+                addClassWindow.Show();
+                button8.Enabled = false;
             }
         }
 

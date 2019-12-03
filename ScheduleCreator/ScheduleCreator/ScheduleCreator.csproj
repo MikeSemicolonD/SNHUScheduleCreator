@@ -71,6 +71,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddClassWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddClassWindow.Designer.cs">
+      <DependentUpon>AddClassWindow.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainWindow.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -97,6 +103,9 @@
     <Compile Include="TermSelectWindow.Designer.cs">
       <DependentUpon>TermSelectWindow.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="AddClassWindow.resx">
+      <DependentUpon>AddClassWindow.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>

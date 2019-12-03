@@ -23,7 +23,7 @@ namespace ScheduleCreator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void SettingsWindow_FormClosing(Object sender, FormClosingEventArgs e)
+        private void SettingsWindow_FormClosing(object sender, FormClosingEventArgs e)
         {
             MainWindow.instance.ClosedSettingsWindowCallback();
         }
