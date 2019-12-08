@@ -58,5 +58,101 @@ namespace ScheduleCreator.Properties {
                 this["Destination"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool OutputDataAsRawInExcel {
+            get {
+                return ((bool)(this["OutputDataAsRawInExcel"]));
+            }
+            set {
+                this["OutputDataAsRawInExcel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OutputCreditTotalInExcel {
+            get {
+                return ((bool)(this["OutputCreditTotalInExcel"]));
+            }
+            set {
+                this["OutputCreditTotalInExcel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SwitchDayAndMonthPositionInExcel {
+            get {
+                return ((bool)(this["SwitchDayAndMonthPositionInExcel"]));
+            }
+            set {
+                this["SwitchDayAndMonthPositionInExcel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool LoadTableOnLoad {
+            get {
+                return ((bool)(this["LoadTableOnLoad"]));
+            }
+            set {
+                this["LoadTableOnLoad"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public int SelectedParserTemplate {
+            get {
+                return ((int)(this["SelectedParserTemplate"]));
+            }
+            set {
+                this["SelectedParserTemplate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PerformPageSetupOperations {
+            get {
+                return ((bool)(this["PerformPageSetupOperations"]));
+            }
+            set {
+                this["PerformPageSetupOperations"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("115")]
+        public float WidthSpacingPercentage {
+            get {
+                return ((float)(this["WidthSpacingPercentage"]));
+            }
+            set {
+                this["WidthSpacingPercentage"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool OutputExcelAsPNG {
+            get {
+                return ((bool)(this["OutputExcelAsPNG"]));
+            }
+            set {
+                this["OutputExcelAsPNG"] = value;
+            }
+        }
     }
 }

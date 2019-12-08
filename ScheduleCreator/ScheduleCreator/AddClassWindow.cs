@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ScheduleCreator
 {
     public partial class AddClassWindow : Form
     {
+        /// <summary>
+        /// List of errors to check when accepting input from the user
+        /// </summary>
         private List<string> Errors = new List<string>
         {
             "ClassDay","ClassName","ClassLocation","ProfessorFullName", "ProfessorEmail"
@@ -20,7 +18,64 @@ namespace ScheduleCreator
         public AddClassWindow()
         {
             InitializeComponent();
+            SetErrorUI();
             StartPosition = FormStartPosition.CenterScreen;
+        }
+
+        /// <summary>
+        /// Sets the UI to what's contained in Errors list
+        /// </summary>
+        public void SetErrorUI()
+        {
+            for(int i = 0; i < Errors.Count; i++)
+            {
+                SetErrorUIElement(Errors[i], true);
+            }
+        }
+
+        /// <summary>
+        /// Sets the UI element to indicate if error occured or not. (True = red, False = black)
+        /// </summary>
+        /// <param name="element"></param>
+        /// <param name="status"></param>
+        public void SetErrorUIElement(string element, bool status)
+        {
+            switch (element)
+            {
+                case "ProfessorFullName":
+                    label8.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+
+                case "ClassDay":
+                    label1.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+
+                case "ClassName":
+                    label2.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+
+                case "ClassLocation":
+                    label4.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+
+                case "ProfessorEmail":
+                    label9.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+
+                case "ClassCredits":
+                    label10.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+
+                case "ClassDate":
+                    label3.ForeColor = (status) ? Color.Red : Color.Black;
+                    label5.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+
+                case "ClassTime":
+                    label6.ForeColor = (status) ? Color.Red : Color.Black;
+                    label7.ForeColor = (status) ? Color.Red : Color.Black;
+                    break;
+            }
         }
 
         /// <summary>
@@ -86,6 +141,7 @@ namespace ScheduleCreator
             //Credits
             data += textBox5.Text + "\r\n\r\n\r\n";
 
+            //Append to class data
             MainWindow.instance.AddCustomClass(data);
 
             Close();
@@ -146,7 +202,7 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void TextBox5_TextChanged(object sender, EventArgs e)
         {
-            if (textBox5.Text.Length == 0 || !System.Text.RegularExpressions.Regex.IsMatch(textBox5.Text, "[^0-9]"))
+            if (textBox5.Text.Length == 0 || !System.Text.RegularExpressions.Regex.IsMatch(textBox5.Text, "[0-9]"))
             {
                 LogPotentialError("ClassCredits", true);
                 label10.ForeColor = Color.Red;

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace ScheduleCreator
 {
-    public partial class mySNHULoginWindow : Form
+    public partial class MySNHULoginWindow : Form
     {
         public class ClassData
         {
@@ -16,7 +16,7 @@ namespace ScheduleCreator
             public string Creds;
         }
 
-        public static mySNHULoginWindow instance;
+        public static MySNHULoginWindow instance;
 
         private List<ClassData> ClassDataFound = new List<ClassData>();
 
@@ -29,7 +29,7 @@ namespace ScheduleCreator
 
         //private int browserCommandSequenceCount = 0;
 
-        public mySNHULoginWindow()
+        public MySNHULoginWindow()
         {
             StartPosition = FormStartPosition.CenterScreen;
             instance = this;

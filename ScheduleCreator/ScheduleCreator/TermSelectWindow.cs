@@ -48,7 +48,7 @@ namespace ScheduleCreator
                 button1.Text = "Loading...";
                 button1.Enabled = false;
 
-                mySNHULoginWindow.instance.LoadSelectedTerm(comboBox1.SelectedText, valuesFound[comboBox1.SelectedIndex]);
+                MySNHULoginWindow.instance.LoadSelectedTerm(comboBox1.SelectedText, valuesFound[comboBox1.SelectedIndex]);
 
                 Close();
             }
@@ -65,7 +65,7 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void Button2_Click(object sender, EventArgs e)
         {
-            mySNHULoginWindow.instance.ResetWindowUI();
+            MySNHULoginWindow.instance.ResetWindowUI();
             Close();
         }
     }

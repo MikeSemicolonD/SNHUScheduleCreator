@@ -36,7 +36,7 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void Button1_Click(object sender, EventArgs e)
         {
-            MainWindow.instance.ApplyNewSettings(checkBox1.Checked,checkBox2.Checked,checkBox3.Checked,checkBox4.Checked,comboBox1.SelectedIndex);
+            MainWindow.instance.ApplyNewSettings(checkBox1.Checked,checkBox2.Checked,checkBox3.Checked,checkBox4.Checked,comboBox1.SelectedIndex, checkBox5.Checked, float.Parse(maskedTextBox1.Text.Substring(1), maskedTextBox1.Culture),checkBox6.Checked);
             Close();
         }
 
@@ -47,7 +47,7 @@ namespace ScheduleCreator
         /// <param name="e"></param>
         private void Button2_Click(object sender, EventArgs e)
         {
-            MainWindow.instance.ApplyDefaultSettings();
+            MainWindow.instance.SetApplicationSettings();
             ApplySettingsToUI(MainWindow.instance.Default);
         }
 
@@ -63,6 +63,9 @@ namespace ScheduleCreator
             checkBox4.Checked = newSettings.LoadTableOnLoad;
             comboBox1.SelectedIndex = newSettings.SelectedParserTemplate;
             checkBox5.Checked = newSettings.PerformPageSetupOperations;
+            string percentage = newSettings.WidthSpacingPercentage.ToString();
+            maskedTextBox1.Text = (percentage.Contains(".") ? percentage : percentage+".0");
+            checkBox6.Checked = newSettings.OutputExcelAsPNG;
         }
     }
 }

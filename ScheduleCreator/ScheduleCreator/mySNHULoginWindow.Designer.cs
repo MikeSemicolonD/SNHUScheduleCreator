@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace ScheduleCreator
 {
-    partial class mySNHULoginWindow
+    partial class MySNHULoginWindow
     {
         /// <summary>
         /// Required designer variable.
@@ -31,7 +31,7 @@ namespace ScheduleCreator
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(mySNHULoginWindow));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MySNHULoginWindow));
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();

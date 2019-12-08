@@ -30,7 +30,7 @@ namespace ScheduleCreator
         /// <summary>
         /// SNHU login window itself
         /// </summary>
-        private mySNHULoginWindow login = null;
+        private MySNHULoginWindow login = null;
 
         /// <summary>
         /// User Settings
@@ -43,17 +43,19 @@ namespace ScheduleCreator
             public bool LoadTableOnLoad;
             public bool PerformPageSetupOperations;
             public int SelectedParserTemplate;
+            public float WidthSpacingPercentage;
+            public bool OutputExcelAsPNG;
         }
 
         /// <summary>
         /// Default Settings
         /// </summary>
-        public readonly Settings Default = new Settings { OutputDataAsRawInExcel = false, OutputCreditTotalInExcel = true, SwitchDayAndMonthPositionInExcel = false, LoadTableOnLoad = true, PerformPageSetupOperations = false, SelectedParserTemplate = 0 };
+        public readonly Settings Default = new Settings { OutputDataAsRawInExcel = false, OutputCreditTotalInExcel = true, SwitchDayAndMonthPositionInExcel = false, LoadTableOnLoad = true, PerformPageSetupOperations = false, SelectedParserTemplate = 0, WidthSpacingPercentage = 115.0f, OutputExcelAsPNG = true};
 
         /// <summary>
-        /// /Settings that we'll modify at runtime
+        /// Settings that we'll modify at runtime
         /// </summary>
-        public Settings RuntimeSettings = new Settings();
+        public Settings RuntimeSettings;
 
         /// <summary>
         /// Values for every weekday
@@ -108,10 +110,10 @@ namespace ScheduleCreator
 
             public void CopyData(ref Entry EntryToCopyTo)
             {
-                EntryToCopyTo.dataStrings = this.dataStrings;
-                EntryToCopyTo.timeValue = this.timeValue;
-                EntryToCopyTo.day1weight = this.day1weight;
-                EntryToCopyTo.day2weight = this.day2weight;
+                EntryToCopyTo.dataStrings = dataStrings;
+                EntryToCopyTo.timeValue = timeValue;
+                EntryToCopyTo.day1weight = day1weight;
+                EntryToCopyTo.day2weight = day2weight;
             }
         }
 
@@ -207,11 +209,20 @@ namespace ScheduleCreator
         }
 
         /// <summary>
-        /// Sets the runtime settings to default
+        /// Sets the runtime settings of the application
         /// </summary>
-        public void ApplyDefaultSettings()
+        public void SetApplicationSettings()
         {
-            RuntimeSettings = Default;
+            RuntimeSettings = new Settings {
+                OutputDataAsRawInExcel = Properties.Settings.Default.OutputDataAsRawInExcel,
+                OutputCreditTotalInExcel = Properties.Settings.Default.OutputCreditTotalInExcel,
+                SwitchDayAndMonthPositionInExcel = Properties.Settings.Default.SwitchDayAndMonthPositionInExcel,
+                LoadTableOnLoad = Properties.Settings.Default.LoadTableOnLoad,
+                SelectedParserTemplate = Properties.Settings.Default.SelectedParserTemplate,
+                PerformPageSetupOperations = Properties.Settings.Default.PerformPageSetupOperations,
+                WidthSpacingPercentage = Properties.Settings.Default.WidthSpacingPercentage,
+                OutputExcelAsPNG = Properties.Settings.Default.OutputExcelAsPNG
+            };
         }
 
         /// <summary>
@@ -220,14 +231,46 @@ namespace ScheduleCreator
         /// <param name="OutputAsRaw"></param>
         /// <param name="IncludeCreditTotal"></param>
         /// <param name="SwitchDayMonth"></param>
+        /// <param name="CreateTableOnLoad"></param>
         /// <param name="SetTemplate"></param>
-        public void ApplyNewSettings(bool OutputAsRaw, bool IncludeCreditTotal, bool SwitchDayMonth, bool CreateTableOnLoad, int SetTemplate)
+        /// <param name="PerformPageOperations"></param>
+        /// <param name="widthSpacing"></param>
+        public void ApplyNewSettings(bool OutputAsRaw, bool IncludeCreditTotal, bool SwitchDayMonth, bool CreateTableOnLoad, int SetTemplate, bool PerformPageOperations, float widthSpacing, bool exportAsPNG)
         {
             RuntimeSettings.OutputDataAsRawInExcel = OutputAsRaw;
             RuntimeSettings.OutputCreditTotalInExcel = IncludeCreditTotal;
             RuntimeSettings.SwitchDayAndMonthPositionInExcel = SwitchDayMonth;
             RuntimeSettings.LoadTableOnLoad = CreateTableOnLoad;
             RuntimeSettings.SelectedParserTemplate = SetTemplate;
+            RuntimeSettings.PerformPageSetupOperations = PerformPageOperations;
+            RuntimeSettings.WidthSpacingPercentage = widthSpacing;
+            RuntimeSettings.OutputExcelAsPNG = exportAsPNG;
+
+            SaveNewSettings(OutputAsRaw,IncludeCreditTotal,SwitchDayMonth,CreateTableOnLoad,SetTemplate,PerformPageOperations,widthSpacing, exportAsPNG);
+        }
+
+        /// <summary>
+        /// Saves the runtime settings the user just applied
+        /// </summary>
+        /// <param name="OutputAsRaw"></param>
+        /// <param name="IncludeCreditTotal"></param>
+        /// <param name="SwitchDayMonth"></param>
+        /// <param name="CreateTableOnLoad"></param>
+        /// <param name="SetTemplate"></param>
+        /// <param name="PerformPageOperations"></param>
+        /// <param name="widthSpacing"></param>
+        public void SaveNewSettings(bool OutputAsRaw, bool IncludeCreditTotal, bool SwitchDayMonth, bool CreateTableOnLoad, int SetTemplate, bool PerformPageOperations, float widthSpacing, bool exportAsPNG)
+        {
+            Properties.Settings.Default.OutputDataAsRawInExcel = OutputAsRaw;
+            Properties.Settings.Default.OutputCreditTotalInExcel = IncludeCreditTotal;
+            Properties.Settings.Default.SwitchDayAndMonthPositionInExcel = SwitchDayMonth;
+            Properties.Settings.Default.LoadTableOnLoad = CreateTableOnLoad;
+            Properties.Settings.Default.SelectedParserTemplate = SetTemplate;
+            Properties.Settings.Default.PerformPageSetupOperations = PerformPageOperations;
+            Properties.Settings.Default.WidthSpacingPercentage = widthSpacing;
+            Properties.Settings.Default.OutputExcelAsPNG = exportAsPNG;
+
+            Properties.Settings.Default.Save();
         }
 
         /// <summary>
@@ -262,7 +305,7 @@ namespace ScheduleCreator
         /// </summary>
         private void LoadSettings()
         {
-            ApplyDefaultSettings();
+            SetApplicationSettings();
         }
 
         /// <summary>
@@ -468,7 +511,7 @@ namespace ScheduleCreator
         {
             if (login == null)
             {
-                login = new mySNHULoginWindow();
+                login = new MySNHULoginWindow();
                 login.Show();
                 button7.Enabled = false;
             }
@@ -922,6 +965,7 @@ namespace ScheduleCreator
         /// <param name="tableData"></param>
         private void GenerateExcelFile(DataTable tableData, bool OutputRaw=false)
         {
+            bool ExcelFailed = false;
 
             Microsoft.Office.Interop.Excel.Application Excel = new Microsoft.Office.Interop.Excel.Application
             {
@@ -937,6 +981,7 @@ namespace ScheduleCreator
             int year = Convert.ToInt32(dateFound.Substring(6));
             string season = (Convert.ToInt32(dateFound.Substring(0, 2)) >= 9) ? "Fall" : "Spring";
             string fileNameAndPath = "";
+            string versionExtension = "";
 
             //Name the excel sheet
             excelWorksheet.Name = "College Schedule " + year.ToString() + " " + season.ToString();
@@ -1038,7 +1083,7 @@ namespace ScheduleCreator
                                         string location = DataEntries[tableYvalue - 2].dataStrings[7];
 
                                         string room = location.Substring(location.IndexOf(',') + 1);
-                                        string building = location.Substring(0,location.IndexOf(','));
+                                        string building = (location.IndexOf(',') > 0) ? location.Substring(0,location.IndexOf(',')) : "";
 
                                         string formattedLocation = building + room;
 
@@ -1222,17 +1267,28 @@ namespace ScheduleCreator
                         creditCell.Font.Size = 12;
                         creditTotalLabel.Font.Size = 12;
                     }
-
-                    Range TimeRange = excelWorksheet.Columns["C:C"];
-                    Range LocationRange = excelWorksheet.Columns["D:D"];
-                    Range ProfNameRange = excelWorksheet.Columns["F:F"];
-                    Range ClassNameRange = excelWorksheet.Columns["B:B"];
-
                     //Auto fit the width on these columns
+                    Range TimeRange = excelWorksheet.Columns["C:C"];
                     TimeRange.AutoFit();
+
+                    Range LocationRange = excelWorksheet.Columns["D:D"];
                     LocationRange.AutoFit();
+
+                    Range ClassNameRange = excelWorksheet.Columns["B:B"];
                     ClassNameRange.AutoFit();
+
+                    Range ProfNameRange = excelWorksheet.Columns["F:F"];
                     ProfNameRange.AutoFit();
+                    
+                    float WidthPaddingPercentage = (RuntimeSettings.WidthSpacingPercentage >= 100) ? RuntimeSettings.WidthSpacingPercentage/100.0f : 1;
+
+                    if (WidthPaddingPercentage > 1)
+                    {
+                        TimeRange.ColumnWidth = (TimeRange.ColumnWidth * WidthPaddingPercentage);
+                        LocationRange.ColumnWidth = (LocationRange.ColumnWidth * WidthPaddingPercentage);
+                        ClassNameRange.ColumnWidth = (ClassNameRange.ColumnWidth * WidthPaddingPercentage);
+                        ProfNameRange.ColumnWidth = (ProfNameRange.ColumnWidth * WidthPaddingPercentage);
+                    }
                 }
                 else
                 {
@@ -1283,7 +1339,7 @@ namespace ScheduleCreator
                 //Define our path and file name
                 fileNameAndPath = textBox2.Text + '/' + excelWorksheet.Name;
 
-                if (RuntimeSettings.PerformPageSetupOperations)
+                if (RuntimeSettings.PerformPageSetupOperations && RuntimeSettings.OutputExcelAsPNG)
                 {
                     excelWorksheet.PageSetup.Orientation = XlPageOrientation.xlLandscape;
                     excelWorksheet.PageSetup.Zoom = false;
@@ -1295,47 +1351,54 @@ namespace ScheduleCreator
             catch (ApplicationException ex)
             {
                 MessageBox.Show(ex.Message + ex.StackTrace);
+                ExcelFailed = true;
             }
             catch (NullReferenceException ex)
             {
                 MessageBox.Show(ex.Message + ex.StackTrace);
+                ExcelFailed = true;
             }
             catch (IndexOutOfRangeException ex)
             {
                 MessageBox.Show(ex.Message + ex.StackTrace);
+                ExcelFailed = true;
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message + " : " + ex.StackTrace);
+                ExcelFailed = true;
             }
             finally
             {
                 button3.Text = "Export to Excel";
                 button3.Enabled = true;
 
-                bool Valid = false;
-                int numVersion = 0;
-                string versionExtension="";
-
-                while (!Valid)
+                if (!ExcelFailed)
                 {
-                    if (File.Exists(fileNameAndPath + versionExtension + ".xlsx"))
-                    {
-                        numVersion++;
-                        versionExtension = "(" + numVersion + ")";
-                    }
-                    else
-                    {
-                        Valid = true;
-                    }
-                }
 
-                //Save it and close it
-                excelWorkbook.SaveAs(fileNameAndPath + versionExtension);
+                    bool Valid = false;
+                    int numVersion = 0;
 
-                if (RuntimeSettings.PerformPageSetupOperations)
-                {
-                    excelWorkbook.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, fileNameAndPath + versionExtension);
+                    while (!Valid)
+                    {
+                        if (File.Exists(fileNameAndPath + versionExtension + ".xlsx"))
+                        {
+                            numVersion++;
+                            versionExtension = "(" + numVersion + ")";
+                        }
+                        else
+                        {
+                            Valid = true;
+                        }
+                    }
+
+                    //Save it and close it
+                    excelWorkbook.SaveAs(fileNameAndPath + versionExtension);
+
+                    if (RuntimeSettings.PerformPageSetupOperations)
+                    {
+                        excelWorkbook.ExportAsFixedFormat(XlFixedFormatType.xlTypePDF, fileNameAndPath + versionExtension);
+                    }
                 }
 
                 excelWorkbook.Close();
@@ -1346,8 +1409,11 @@ namespace ScheduleCreator
                 Marshal.ReleaseComObject(excelWorkbook);
                 Marshal.ReleaseComObject(Excel);
 
-                //Run the Excel file
-                System.Diagnostics.Process.Start(fileNameAndPath + versionExtension + ".xlsx");
+                if (!ExcelFailed)
+                {
+                    //Run the Excel file
+                    System.Diagnostics.Process.Start(fileNameAndPath + versionExtension + ".xlsx");
+                }
             }
         }
     }
