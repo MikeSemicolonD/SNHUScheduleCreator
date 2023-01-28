@@ -11,7 +11,7 @@
   
 ## WARNING!
    This program is dependant on you (And SNHU) having a stable internet connection. Data is collected in a sequential fashion with timed delays in between.
-   There could be a situation where a page takes longer than expected to load, leading to data no being collected and being unable to move on. (Program will appear to freeze)
+   There could be a situation where a page takes longer than expected to load, leading to data not being collected and being unable to move on. (Program will appear to freeze)
    This could be fixed by only performing collections when the page has 'loaded' which can be hard to determine since the pages themselves load content within frames.
 
 ## For future historians :   
